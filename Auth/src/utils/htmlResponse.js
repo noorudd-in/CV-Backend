@@ -41,7 +41,7 @@ const verifyEmailBody = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification</title>
+    <title>Welcome to {{brandName}} 🎉 – Let's Get Your Portfolio Ready!</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -86,12 +86,19 @@ const verifyEmailBody = `
             margin-top: 20px;
         }
 
+        .divider {
+            border-top: 1px solid #dddddd;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
         .email-footer {
             text-align: center;
             padding-top: 20px;
             font-size: 14px;
             color: #777777;
-            border-top: 1px solid #dddddd;
             margin-top: 20px;
         }
     </style>
@@ -100,23 +107,33 @@ const verifyEmailBody = `
 <body>
     <div class="email-container">
         <div class="email-body">
-            <h2>Email Verification</h2>
             <p>Hello {{userFullName}},</p>
-            <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
+            <p>We’re thrilled to have you here. You’re now part of a community that’s redefining portfolios with style and ease!</p>
+            <p>Before moving ahead please confirm your email address by clicking the button below:</p>
             <a href="{{verificationUrl}}" class="verify-btn">Verify Your Email</a>
             <p>If the button above doesn’t work, please copy and paste the following link into your web browser:</p>
             <p><a href="{{verificationUrl}}">{{verificationUrl}}</a></p>
-            <p>If you didn’t sign up for this account, please ignore this email.</p>
-            <p>Best Regards,<br>Noorudd.in</p>
         </div>
-        <div class="email-footer">
-            <p>This is a computer generated email so please do not reply. <br>For any queries drop your message to <a href="mailto:hi@noorudd.in">hi@noorudd.in</a>.</p>
+        <div class="email-body divider">
+            <h2>🚀 Let’s Get Started!</h2>
+            <p>Your account is ready, and the exciting part awaits! Here’s how you can start creating your professional CV and portfolio right away:</p>
+            <ul>
+                <li>Choose from our beautifully designed templates to match your style and field.</li>
+                <li>Fill in sections like Experience, Skills, Projects, and more. (P.S.: This is one time 😉)</li>
+                <li>Customize as per your need and click on publish!</li>
+                <li>Wohoooo! Your site is ready 🎉</li>
+            </ul>
+            <p>We can’t wait to see your portfolio shine!</p>
+
+            <p><span class="bold">Cheers,</span><br />{{brandName}}</p>
+        </div>
+        <div class="email-footer divider">
+            <p>Have any questions or need support? Feel free to reach out to us at <a href="mailto:support@viehgroup.com">[support@viehgroup.com]</a>.<br/>We're here to help you make the most of your portfolio!</p>
         </div>
     </div>
 </body>
 
 </html>
-
 `
 
 const emailAlreadyVerified = `
@@ -350,10 +367,10 @@ const forgotPasswordEmailBody = `
 `
 
 module.exports = {
-  invalidToken,
-  verifyEmailBody,
-  emailAlreadyVerified,
-  emailVerified,
-  forgotUsernameEmailBody,
-  forgotPasswordEmailBody
+    invalidToken,
+    verifyEmailBody,
+    emailAlreadyVerified,
+    emailVerified,
+    forgotUsernameEmailBody,
+    forgotPasswordEmailBody
 }

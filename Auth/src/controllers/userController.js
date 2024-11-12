@@ -284,7 +284,7 @@ const getProfile = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
   try {
-    const result = userService.verifyToken(req.query.token);
+    const result = await userService.verifyToken(req.query.token);
     if (!result.data) {
       return res.status(client.BAD_REQUEST).send(invalidToken);
     }
@@ -439,7 +439,7 @@ const resetPassword = async (req, res) => {
 const updatePassword = async (req, res) => {
   const { state, password } = req.body;
   try {
-    const result = userService.verifyToken(state);
+    const result = await userService.verifyToken(state);
     if (!result.data) {
       return res.status(client.BAD_REQUEST).json({
         data: null,

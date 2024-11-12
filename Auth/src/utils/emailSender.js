@@ -7,7 +7,8 @@ const brand = 'View My CV';
 const sendVerificationEmail = (to, fullName, verificationUrl) => {
     const emailBody = verifyEmailBody
         .replaceAll("{{verificationUrl}}", verificationUrl)
-        .replace("{{userFullName}}", fullName);
+        .replace("{{userFullName}}", fullName)
+        .replaceAll('{{brandName}}', brand)
 
     const mailOptions = {
         from: fromEmail,
