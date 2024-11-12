@@ -1,8 +1,8 @@
 const UserService = require("../services/userService");
 const { success, client, server } = require("../utils/statusCodes");
-const sendEmail = require("../utils/sendVerifyEmail");
+const { sendVerificationEmail, sendForgotUsernameEmail, sendForgotPasswordEmail } = require("../utils/emailSender");
 const { BASE_URL } = require("../config/constants");
-const { cleanEmail } = require('../utils/helper')
+const { cleanEmail, hashPassword } = require('../utils/helper')
 const {
   invalidToken,
   emailAlreadyVerified,
@@ -49,7 +49,7 @@ const createUser = async (req, res) => {
       },
       "2h"
     );
-    sendEmail(
+    sendVerificationEmail(
       user.email,
       user.full_name,
       `${BASE_URL}/auth/api/v1/verify-email?token=${authToken}`
@@ -316,7 +316,7 @@ const resendEmail = async (req, res) => {
         },
         "2h"
       );
-      sendEmail(
+      sendVerificationEmail(
         user.email,
         user.full_name,
         `${BASE_URL}/auth/api/v1/verify-email?token=${authToken}`
@@ -376,6 +376,7 @@ const resetUsername = async (req, res) => {
     }
 
     // Assuming password is not provided so sending email
+    sendForgotUsernameEmail(user.email, user.full_name, user.username);
     return res.status(success.OK).json({
       data: null,
       success: true,
@@ -393,6 +394,91 @@ const resetUsername = async (req, res) => {
   }
 }
 
+const resetPassword = async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    let user;
+    if (username) {
+      user = await userService.getUserByUsername(username)
+    }
+    if (email) {
+      user = await userService.getUserByEmail(email);
+    }
+    if (!user) {
+      return res.status(client.UNAUTHORISED).json({
+        data: null,
+        success: true,
+        message: "If user exist, an email will be sent.",
+        error: null,
+      });
+    }
+    const authToken = userService.createToken(
+      {
+        id: user.id
+      },
+      '2h'
+    )
+    sendForgotPasswordEmail(user.email, user.full_name, `frontend.com/reset-password?state=${authToken}`);
+    return res.status(client.UNAUTHORISED).json({
+      data: null,
+      success: true,
+      message: "If user exist, an email will be sent.",
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(server.INTERNAL_SERVER_ERROR).json({
+      data: null,
+      success: false,
+      message: "Cannot perform the operation.",
+      error: error,
+    });
+  }
+}
+
+const updatePassword = async (req, res) => {
+  const { state, password } = req.body;
+  try {
+    const result = userService.verifyToken(state);
+    if (!result.data) {
+      return res.status(client.BAD_REQUEST).json({
+        data: null,
+        message: "Link Expired.",
+        success: false,
+        error: "Invalid request.",
+      });
+    }
+    const user = await userService.getUser(result.data.id);
+    if (!user) {
+      return res.status(client.BAD_REQUEST).json({
+        data: null,
+        message: "Link Expired.",
+        success: false,
+        error: "Invalid request.",
+      });
+    }
+    const hashedPassword = hashPassword(password)
+    const updatedUser = await userService.updateUser(user.id, {
+      password: hashedPassword,
+    });
+    return res.status(success.OK).json({
+      data: null,
+      success: true,
+      message: "Password resetted.",
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(client.BAD_REQUEST).json({
+      data: null,
+      message: "Link Expired.",
+      success: false,
+      error: "Invalid request.",
+    });
+  }
+
+}
+
 module.exports = {
   createUser,
   updateUser,
@@ -403,5 +489,7 @@ module.exports = {
   getProfile,
   verifyEmail,
   resendEmail,
-  resetUsername
+  resetUsername,
+  resetPassword,
+  updatePassword
 };

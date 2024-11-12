@@ -92,7 +92,7 @@ const validateUserLogin = (req, res, next) => {
 };
 
 const validateVerifyEmail = (req, res, next) => {
-  const token = req.cookies.authToken;
+  const token = req?.query?.token
   if (!token) {
     return res.status(client.BAD_REQUEST).send(invalidToken);
   }
@@ -111,9 +111,37 @@ const validateResendEmailVerify = (req, res, next) => {
   next()
 }
 
+const validateForgotPassword = (req, res, next) => {
+  const { username, email } = req.body;
+  if (!username && !email) {
+    return res.status(client.BAD_REQUEST).json({
+      data: null,
+      message: "Email or Username is required.",
+      success: false,
+      error: "Invalid request.",
+    });
+  }
+  next()
+}
+
+const validateNewPassword = (req, res, next) => {
+  const { state, password } = req.body;
+  if (!state || !password) {
+    return res.status(client.BAD_REQUEST).json({
+      data: null,
+      message: "Link Expired.",
+      success: false,
+      error: "Invalid request.",
+    });
+  }
+  next()
+}
+
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
   validateVerifyEmail,
-  validateResendEmailVerify
+  validateResendEmailVerify,
+  validateForgotPassword,
+  validateNewPassword
 };

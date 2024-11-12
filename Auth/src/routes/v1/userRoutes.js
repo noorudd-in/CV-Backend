@@ -11,7 +11,9 @@ const {
   getProfile,
   verifyEmail,
   resendEmail,
-  resetUsername
+  resetUsername,
+  resetPassword,
+  updatePassword
 } = require("../../controllers/userController");
 
 const {
@@ -20,7 +22,9 @@ const {
   isAdmin,
   isUser,
   validateVerifyEmail,
-  validateResendEmailVerify
+  validateResendEmailVerify,
+  validateForgotPassword,
+  validateNewPassword
 } = require("../../middlewares/index");
 
 // Register & Login a user
@@ -42,5 +46,9 @@ router.get('/verify-email', validateVerifyEmail, verifyEmail)
 router.post('/resend-verification-email', validateResendEmailVerify, resendEmail)
 // Forgot Password
 router.post('/forgot-username', validateResendEmailVerify, resetUsername)
+// API to sent an email with the password reset link.
+router.post('/forgot-password', validateForgotPassword, resetPassword);
+// API to verify the reset password email token and then update the password.
+router.post('/forgot-password-verify', validateNewPassword, updatePassword)
 
 module.exports = router;
