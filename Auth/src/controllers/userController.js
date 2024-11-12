@@ -2,7 +2,7 @@ const UserService = require("../services/userService");
 const { success, client, server } = require("../utils/statusCodes");
 const { sendVerificationEmail, sendForgotUsernameEmail, sendForgotPasswordEmail } = require("../utils/emailSender");
 const { BASE_URL } = require("../config/constants");
-const { cleanEmail, hashPassword } = require('../utils/helper')
+const { cleanEmail, hashPassword, restrictedUsernames } = require('../utils/helper')
 const {
   invalidToken,
   emailAlreadyVerified,
@@ -13,6 +13,14 @@ const userService = new UserService();
 
 const createUser = async (req, res) => {
   const { username, full_name, email, password } = req.body
+  if (restrictedUsernames.includes(username.toLowerCase())) {
+    return res.status(client.BAD_REQUEST).json({
+      data: null,
+      message: "Username already exist.",
+      success: false,
+      error: "Invalid request.",
+    });
+  }
   const newEmail = cleanEmail(email);
   const checkUsername = await userService.getUserByUsername(username.toLowerCase());
   if (checkUsername) {

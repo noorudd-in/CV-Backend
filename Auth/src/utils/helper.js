@@ -12,6 +12,8 @@ const cleanEmail = (email) => {
     return `${normalizedLocal}@${domain}`;
 }
 
+const restrictedUsernames = ["admin", "user", "root", "support", 'vmc', 'viewmycv', 'showmycv', 'viewcv', 'showcv'];
+
 module.exports = {
-    hashPassword, cleanEmail
+    hashPassword, cleanEmail, restrictedUsernames
 }

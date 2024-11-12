@@ -1,7 +1,7 @@
 const transporter = require("../config/mailer");
 const { verifyEmailBody, forgotUsernameEmailBody, forgotPasswordEmailBody } = require('../utils/htmlResponse')
 
-const fromEmail = 'Noorudd.in <verify@noorudd.in>'
+const fromEmail = 'VMC <auth@noorudd.in>'
 const brand = 'View My CV';
 
 const sendVerificationEmail = (to, fullName, verificationUrl) => {
