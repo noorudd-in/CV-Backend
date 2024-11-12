@@ -10,7 +10,8 @@ const {
   loginUser,
   getProfile,
   verifyEmail,
-  resendEmail
+  resendEmail,
+  resetUsername
 } = require("../../controllers/userController");
 
 const {
@@ -39,5 +40,7 @@ router.get("/users", isAdmin, getAllUser);
 router.get('/verify-email', validateVerifyEmail, verifyEmail)
 // Resend Email Verification
 router.post('/resend-verification-email', validateResendEmailVerify, resendEmail)
+// Forgot Password
+router.post('/forgot-username', validateResendEmailVerify, resetUsername)
 
 module.exports = router;

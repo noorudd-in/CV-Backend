@@ -339,6 +339,60 @@ const resendEmail = async (req, res) => {
   }
 };
 
+const resetUsername = async (req, res) => {
+  const { email, password } = req.body
+  try {
+    const user = await userService.getUserByEmail(email);
+    if (!user) {
+      return res.status(success.OK).json({
+        data: null,
+        success: true,
+        message: "If account exist, you will receive an email.",
+        error: null
+      })
+    }
+    if (password) {
+      const checkPassword = userService.verifyPassword(
+        password,
+        user.password
+      );
+      if (!checkPassword) {
+        return res.status(client.UNAUTHORISED).json({
+          data: null,
+          success: false,
+          message: "Invalid credentials.",
+          error: "User is not authenticated.",
+        });
+      } else {
+        return res.status(success.OK).json({
+          data: {
+            username: user.username
+          },
+          success: true,
+          message: null,
+          error: null
+        })
+      }
+    }
+
+    // Assuming password is not provided so sending email
+    return res.status(success.OK).json({
+      data: null,
+      success: true,
+      message: 'If account exist, you will receive an email.',
+      error: null
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(server.INTERNAL_SERVER_ERROR).json({
+      data: null,
+      success: false,
+      message: "Cannot fetch the username.",
+      error: error,
+    });
+  }
+}
+
 module.exports = {
   createUser,
   updateUser,
@@ -349,4 +403,5 @@ module.exports = {
   getProfile,
   verifyEmail,
   resendEmail,
+  resetUsername
 };
