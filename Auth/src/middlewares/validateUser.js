@@ -64,6 +64,14 @@ const validateUserRegistration = (req, res, next) => {
       error: "Invalid request.",
     });
   }
+  if (!username.match(/^[a-zA-Z0-9]+$/)) {
+    return res.status(client.BAD_REQUEST).json({
+      data: null,
+      message: "Invalid username.",
+      success: false,
+      error: "Invalid request.",
+    });
+  }
 
   next();
 };
