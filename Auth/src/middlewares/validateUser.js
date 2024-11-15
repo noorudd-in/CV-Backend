@@ -70,7 +70,6 @@ const validateUserRegistration = (req, res, next) => {
 
 const validateUserLogin = (req, res, next) => {
   const { username, email, password } = req.body
-  console.log(username, email);
   if (!email && !username) {
     return res.status(client.BAD_REQUEST).json({
       data: null,

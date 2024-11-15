@@ -351,7 +351,7 @@ const resetUsername = async (req, res) => {
   const { email, password } = req.body
   try {
     const user = await userService.getUserByEmail(email);
-    if (!user) {
+    if (!user && !password) {
       return res.status(success.OK).json({
         data: null,
         success: true,
@@ -360,6 +360,14 @@ const resetUsername = async (req, res) => {
       })
     }
     if (password) {
+      if (!user) {
+        return res.status(client.UNAUTHORISED).json({
+          data: null,
+          success: false,
+          message: "Invalid credentials.",
+          error: "User is not authenticated.",
+        });
+      }
       const checkPassword = userService.verifyPassword(
         password,
         user.password
